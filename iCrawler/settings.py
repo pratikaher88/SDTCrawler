@@ -86,8 +86,7 @@ WSGI_APPLICATION = 'iCrawler.wsgi.application'
 
 DATABASES = {
 
-    'default' : 'postgres://tbvwhrzdogjpxp:bcc1c4d6c2f0b3904fced90b773fcab2ea77ae80f11b9126eb8421dd271a6415@ec2-107-22-195-114.compute-1.amazonaws.com:5432/d2c5re4ar3rrqv
-'
+    'default' : 'postgres://tbvwhrzdogjpxp:bcc1c4d6c2f0b3904fced90b773fcab2ea77ae80f11b9126eb8421dd271a6415@ec2-107-22-195-114.compute-1.amazonaws.com:5432/d2c5re4ar3rrqv'
 }
 
     'default': {
