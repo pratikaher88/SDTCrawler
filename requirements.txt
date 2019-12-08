@@ -1,7 +1,9 @@
-Django==2.0.12
+Django==2.1.4
 python-scrapyd-api==2.1.2
 requests==2.18.4
 Scrapy==1.5.1
 scrapy-djangoitem==1.1.1
 scrapyd==1.2.0
 django-crispy-forms==1.7.2
+djangorestframework==3.9.0
+
