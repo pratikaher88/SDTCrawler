@@ -25,7 +25,7 @@ SECRET_KEY = '0qqskd*@bsrt1=$&*$gd9zje49vmeb_k6(yr*%m69ha$*72z(p'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['https://webcrawlerdemo.herokuapp.com/']
 
 
 # Application definition
