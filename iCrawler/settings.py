@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 """
 
 import os
-
+import dj_database_url
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -85,8 +85,9 @@ WSGI_APPLICATION = 'iCrawler.wsgi.application'
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
 
 DATABASES = {
-    
-    'default' : 'postgres://tbvwhrzdogjpxp:bcc1c4d6c2f0b3904fced90b773fcab2ea77ae80f11b9126eb8421dd271a6415@ec2-107-22-195-114.compute-1.amazonaws.com:5432/d2c5re4ar3rrqv'
+        'default': dj_database_url.config(
+        default=config('DATABASE_URL')
+    )
 
 }
 
