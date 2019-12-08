@@ -28,7 +28,13 @@ DEBUG = False
 ALLOWED_HOSTS = ['webcrawlerdemo.herokuapp.com/','.herokuapp.com']
 
 
+# ALLOWED_HOSTS = ['webcrawlerdemo.herokuapp.com/','.herokuapp.com','localhost']
+
+
 # Application definition
+
+DEBUG_PROPAGATE_EXCEPTIONS = True
+
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -135,4 +141,38 @@ STATIC_ROOT = os.path.join(PROJECT_ROOT, 'staticfiles')
 # )
 
 # STATICFILES_STORAGE = 'whitenoise.django.CompressedManifestStaticFilesStorage'
+
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': ('%(asctime)s [%(process)d] [%(levelname)s] ' +
+                       'pathname=%(pathname)s lineno=%(lineno)s ' +
+                       'funcname=%(funcName)s %(message)s'),
+            'datefmt': '%Y-%m-%d %H:%M:%S'
+        },
+        'simple': {
+            'format': '%(levelname)s %(message)s'
+        }
+    },
+    'handlers': {
+        'null': {
+            'level': 'DEBUG',
+            'class': 'logging.NullHandler',
+        },
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose'
+        }
+    },
+    'loggers': {
+        'testlogger': {
+            'handlers': ['console'],
+            'level': 'INFO',
+        }
+    }
+}
 
