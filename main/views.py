@@ -7,12 +7,22 @@ from django.shortcuts import render
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from scrapyd_api import ScrapydAPI
-from main.utils import URLUtil
-from main.models import ScrapyItem
+import random, requests
+from django.contrib import messages
+from django.urls import reverse
+from django.shortcuts import redirect
+from rest_framework import generics
+from .serializers import ListURLDetailsSerializer,ListCrawledURLsSerializer
+
+
+# from main.utils import URLUtil
+# from main.models import ScrapyItem
+from main.models import Quote, URL_Details
 
 # connect scrapyd service
 scrapyd = ScrapydAPI('http://localhost:6800')
 
+scrapy_error = "Scrapyd returned a 500 error: <html><head><title>Processing Failed</title></head><body><b>Processing Failed</b></body></html>"
 
 def is_valid_url(url):
     validate = URLValidator()
@@ -86,3 +96,204 @@ def crawl(request):
                 return JsonResponse({'error': str(e)})
         else:
             return JsonResponse({'status': status})
+
+
+def displayModelObjects(request):
+
+    objects_quote = Quote.objects.all()
+
+    return render(request,'display_quotes.html', {'details': objects_quote })
+
+
+
+def calculateScoreandDisplay(request):
+
+    calculated_objects = URL_Details.objects.all()
+
+    if calculated_objects.count() <= 0 :
+
+
+
+        array_urls = Quote.objects.values_list('text', flat=True)
+        array_urls = list(array_urls)
+        
+        score_urls = random.sample(array_urls, 10)
+
+        for value in iter(score_urls):
+
+
+
+            url = "http://axe.checkers.eiii.eu/export-jsonld/pagecheck2.0/?url=" + value
+
+            r = requests.get(url=url)
+            data = r.json()
+
+
+            total_violations = 0
+            total_verify = 0
+            total_pass = 0
+
+            for violations in data['result-blob']['violations']:
+
+                if any("wcag" in w for w in violations['tags']):
+
+                    total_violations += len(violations['nodes'])
+
+
+            for incomplete in data['result-blob']['incomplete']:
+
+                if any("wcag" in w for w in incomplete['tags']):
+
+                    total_verify += len(incomplete['nodes'])
+
+
+            for passes in data['result-blob']['passes']:
+
+                if any("wcag" in w for w in passes['tags']):
+
+                    total_pass += len(passes['nodes'])
+
+            
+            calculated_score = URL_Details(site_name=value, total_violations = total_violations,total_verify = total_verify
+                                                ,total_pass = total_pass)
+            calculated_score.save()
+
+    return render(request,'calculate_scores.html', {'details': calculated_objects })
+
+def displayCalculatedScores(request): 
+
+
+    url_details = URL_Details.objects.all()
+
+    return render(request,'calculate_scores.html', {'details': url_details })
+
+
+def sendRequestToAPI(request):
+
+    Quote.objects.all().delete()
+
+    try:
+        task = scrapyd.schedule('default', 'toscrape-css')
+
+    except Exception :
+        pass
+        # print(e)
+        # if e == scrapy_error: 
+        #     print("Hello")
+        # 
+    # objects_quote = Quote.objects.all()
+    # return render(request,'display_quotes.html', {'details': objects_quote })
+    return redirect(reverse('display-results'))
+        
+
+
+
+def clearQuote(request):
+
+    Quote.objects.all().delete()
+
+    return None
+
+
+@require_http_methods(['POST', 'GET']) 
+def findDetails(request):
+
+    if request.method == 'POST':
+        
+        website_name = request.POST.get('website_name')
+
+        print("Website Name",website_name)
+        
+        domain = urlparse(website_name).netloc
+        
+        print("Domain",domain)
+
+        Quote.objects.all().delete()
+        URL_Details.objects.all().delete()
+
+        # task = 1
+
+        try:
+            task = scrapyd.schedule('default', 'toscrape-css',url=website_name,domain=domain)
+
+        except Exception :
+            pass
+        
+        
+        return render(request,'crawling_started.html')
+
+
+        # calculateScoreandDisplay(request)
+
+        # status = scrapyd.job_status('default', task)
+
+        # print(status)
+    
+    return render(request,'find_details.html')
+
+
+	# return render(request,'find_details.html',{'id':1})
+
+
+    # return render(request,'find_details.html')
+
+
+def csd():
+
+    array_urls = Quote.objects.values_list('text', flat=True)
+    array_urls = list(array_urls)
+    
+    score_urls = random.sample(array_urls, 10)
+
+    for value in iter(score_urls):
+
+
+
+        url = "http://axe.checkers.eiii.eu/export-jsonld/pagecheck2.0/?url=" + value
+
+        r = requests.get(url=url)
+        data = r.json()
+
+
+        total_violations = 0
+        total_verify = 0
+        total_pass = 0
+
+        for violations in data['result-blob']['violations']:
+
+            if any("wcag" in w for w in violations['tags']):
+
+                total_violations += len(violations['nodes'])
+
+
+        for incomplete in data['result-blob']['incomplete']:
+
+            if any("wcag" in w for w in incomplete['tags']):
+
+                total_verify += len(incomplete['nodes'])
+
+
+        for passes in data['result-blob']['passes']:
+
+            if any("wcag" in w for w in passes['tags']):
+
+                total_pass += len(passes['nodes'])
+
+        
+        calculated_score = URL_Details(site_name=value, total_violations = total_violations,total_verify = total_verify
+                                            ,total_pass = total_pass)
+        calculated_score.save()
+
+    return render(request,'calculate_scores.html', {'details': calculated_objects })
+
+
+
+class ListURLDetailsView(generics.ListAPIView):
+    queryset = URL_Details.objects.all()
+    serializer_class = ListURLDetailsSerializer
+
+
+class ListCrawledURLsView(generics.ListAPIView):
+        queryset = Quote.objects.all()
+        serializer_class = ListCrawledURLsSerializer
+

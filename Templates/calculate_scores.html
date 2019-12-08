@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Scraped Results</title>
+
+</head>
+
+<body>
+
+
+    {% for value in details %}
+
+    {{ value.site_name }} <br>
+    {{ value.total_violations }} <br>
+    {{ value.total_verify }} <br>
+    {{ value.total_pass }} <br>
+
+    {% endfor %}
+
+
+</body>
+
+</html>

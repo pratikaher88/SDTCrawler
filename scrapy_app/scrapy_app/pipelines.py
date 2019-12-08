@@ -9,6 +9,9 @@ from main.models import Quote
 
 class ScrapyAppPipeline(object):
     def process_item(self, item, spider):
-        quote = Quote(text=item.get('text'), author=item.get('author'))
+        quote = Quote(text=item.get('text'), author="Author")
+        # print("Text",text=item.get('text'))
+        # quote = Quote(text=item.get('text'))
+
         quote.save()
         return item
