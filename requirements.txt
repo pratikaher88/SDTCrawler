@@ -4,3 +4,4 @@ requests==2.18.4
 Scrapy==1.5.1
 scrapy-djangoitem==1.1.1
 scrapyd==1.2.0
+django-crispy-forms==1.7.2
