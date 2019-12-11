@@ -32,6 +32,7 @@ requests==2.18.4
 Scrapy==1.5.1
 scrapy-djangoitem==1.1.1
 scrapyd==1.2.0
+scrapyd-heroku==0.2.0
 service-identity==18.1.0
 six==1.13.0
 Twisted==19.10.0
@@ -39,3 +40,6 @@ urllib3==1.22
 w3lib==1.21.0
 whitenoise==4.1.4
 zope.interface==4.7.1
+Scrapy==0.24.4
+scrapyd==1.0.1
+scrapy-heroku==0.7.1

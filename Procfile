@@ -1,1 +1,1 @@
-web: gunicorn iCrawler.wsgi --log-file -
+web: scrapyd
