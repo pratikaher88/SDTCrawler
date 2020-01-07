@@ -10,7 +10,7 @@ from scrapy_app.settings import DATABASE_URL
 import psycopg2
 from scrapy_app.models import Quote, db_connect
 from scrapy.exceptions import DropItem
-from scrapy_app.models import Quote, URL_details, TimeToCrawl, db_connect
+from scrapy_app.models import Quote,URL_details, db_connect
 from sqlalchemy.orm import sessionmaker
 import random
 import requests
@@ -174,14 +174,6 @@ class ScrapyAppPipeline(object):
         # print("Quote",quote)    
 
         session.close()
-
-        session = self.Session()
-
-        
-
-
-
-
     
     # work_time = datetime.now() - spider.started_on
 
